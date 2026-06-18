@@ -1,0 +1,1 @@
+export const MAX_REFRESH_TOKENS = 5;
