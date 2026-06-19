@@ -42,7 +42,7 @@ const taskSchema = new Schema<ITask>(
 
     dueDate: {
       type: Date,
-    },
+    }
   },
   {
     timestamps: true,

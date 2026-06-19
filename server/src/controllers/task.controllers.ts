@@ -1,18 +1,32 @@
 import { Request, Response } from "express";
+
 import { asyncHandler } from "../utils/asyncHandler";
-import { CreateTaskInput, TaskIdParams } from "../validators/task.validator";
-import { createTask, readTask } from "../services/task.services";
+
 import AppError from "../utils/AppError";
-import { AuthenticatedRequest } from "../types/authenticated-request";
+
+import {
+  CreateTaskInput,
+  UpdateTaskInput,
+  TaskIdParams,
+  TaskFiltersQuery,
+} from "../validators/task.validator";
+
+import {
+  createTask,
+  deleteTask,
+  readTask,
+  updateTask,
+  getTasks,
+} from "../services/task.services";
 
 export const addTaskController =
   asyncHandler(
     async (
-      req:Request,
-      res:Response
+      req: Request,
+      res: Response
     ) => {
 
-      const createdTask =
+      const task =
         await createTask(
           req.validated?.body as CreateTaskInput,
           req.auth!.userId
@@ -20,22 +34,115 @@ export const addTaskController =
 
       res.status(201).json({
         success: true,
-        data: createdTask,
+        data: task,
       });
     }
   );
 
-// export const deleteTaskController = asyncHandler(async(req:Request,res:Response)=>{
-//     const deletedTask = await deleteTask(req.validated?.query as TaskIdParams,req.auth!.userId)
-//     res.status(204).json({
-//         success: true,
-//         data: deletedTask,
-//     });
-// })
-export const readTaskController = asyncHandler(async(req:Request,res:Response)=>{
-    const getTask = await readTask(req.validated?.params as TaskIdParams)
-    res.status(200).json({
+export const getTaskController =
+  asyncHandler(
+    async (
+      req: Request,
+      res: Response
+    ) => {
+
+      const { taskId } =
+        req.validated?.params as TaskIdParams;
+
+      const task =
+        await readTask(
+          taskId,
+          req.auth!.userId
+        );
+
+      if (!task) {
+        throw new AppError(
+          "Task not found",
+          404
+        );
+      }
+
+      res.status(200).json({
         success: true,
-        data: getTask,
-    });
-})
+        data: task,
+      });
+    }
+  );
+
+export const getTasksController =
+  asyncHandler(
+    async (
+      req: Request,
+      res: Response
+    ) => {
+
+      const tasks =
+        await getTasks(
+          req.auth!.userId,
+          req.validated?.query as TaskFiltersQuery
+        );
+
+      res.status(200).json({
+        success: true,
+        data: tasks,
+      });
+    }
+  );
+
+export const updateTaskController =
+  asyncHandler(
+    async (
+      req: Request,
+      res: Response
+    ) => {
+
+      const { taskId } =
+        req.validated?.params as TaskIdParams;
+
+      const updatedTask =
+        await updateTask(
+          taskId,
+          req.auth!.userId,
+          req.validated?.body as UpdateTaskInput
+        );
+
+      if (!updatedTask) {
+        throw new AppError(
+          "Task not found",
+          404
+        );
+      }
+
+      res.status(200).json({
+        success: true,
+        data: updatedTask,
+      });
+    }
+  );
+
+export const deleteTaskController =
+  asyncHandler(
+    async (
+      req: Request,
+      res: Response
+    ) => {
+
+      const { taskId } =
+        req.validated?.params as TaskIdParams;
+
+      const deletedTask =
+        await deleteTask(
+          taskId,
+          req.auth!.userId
+        );
+
+      if (!deletedTask) {
+        throw new AppError(
+          "Task not found",
+          404
+        );
+      }
+
+      res.status(204).send();
+    }
+  );
