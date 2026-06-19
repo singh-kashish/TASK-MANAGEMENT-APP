@@ -19,18 +19,14 @@ const authMiddleware = (
   _res: Response,
   next: NextFunction
 ) => {
-
   try {
-
     const authHeader =
       req.headers.authorization;
 
     if (!authHeader) {
-      return next(
-        new AppError(
-          "Authentication required",
-          401
-        )
+      throw new AppError(
+        "Authentication required",
+        401
       );
     }
 
@@ -41,35 +37,29 @@ const authMiddleware = (
       scheme !== "Bearer" ||
       !token
     ) {
-      return next(
-        new AppError(
-          "Invalid authorization header",
-          401
-        )
+      throw new AppError(
+        "Invalid authorization header",
+        401
       );
     }
 
     const decoded =
-      verifyAccessToken(
-        token
-      );
+      verifyAccessToken(token);
 
-    const payload =
+    req.auth =
       jwtPayloadSchema.parse(
         decoded
       );
 
-    req.auth = payload;
-
     next();
-
-  } catch {
-
+  } catch (error) {
     next(
-      new AppError(
-        "Invalid or expired token",
-        401
-      )
+      error instanceof AppError
+        ? error
+        : new AppError(
+            "Invalid or expired token",
+            401
+          )
     );
   }
 };

@@ -69,6 +69,13 @@ taskSchema.index({
   userId: 1,
   createdAt: -1,
 });
+taskSchema.index({
+  userId: 1,
+  status: 1,
+  priority: 1,
+});
+
+
 export const TaskModel = mongoose.model<ITask>(
   "Task",
   taskSchema

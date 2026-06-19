@@ -6,6 +6,9 @@ import helmet from "helmet";
 
 import healthRoutes from "./routes/health.routes";
 import { env } from "./config/env";
+import authRoutes from './routes/auth.routes'
+import errorMiddleware from "./middleware/error.middleware";
+import taskRoutes from "./routes/task.routes";
 
 const app = express();
 
@@ -25,5 +28,9 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/health", healthRoutes);
+app.use("/api/auth",authRoutes);
+app.use("/api/tasks",taskRoutes)
+
+app.use(errorMiddleware);
 
 export default app;

@@ -25,16 +25,10 @@ const userSchema = new Schema<IUser>(
     email: {
       type: String,
       required: true,
-      unique: true,
       lowercase: true,
       trim: true,
     },
-
-    passwordHash: {
-      type: String,
-      required: true,
-    },
-
+    passwordHash: { type: String, required: true },
     refreshTokens: {
       type: [refreshTokenSchema],
       default: [],
@@ -46,12 +40,13 @@ const userSchema = new Schema<IUser>(
       },
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-export const UserModel = mongoose.model<IUser>(
+userSchema.index({ email: 1 }, { unique: true });
+
+const UserModel = mongoose.model<IUser>(
   "User",
   userSchema
 );
+export default UserModel;
