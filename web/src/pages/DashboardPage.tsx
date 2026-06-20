@@ -1,8 +1,4 @@
 import {
-  useMemo,
-} from "react";
-
-import {
   useSearchParams,
 } from "react-router-dom";
 
@@ -20,30 +16,37 @@ import {
 } from "@/features/tasks/task.hooks";
 import TaskStats
   from "@/components/tasks/TaskStats";
+import type {
+  TaskPriority,
+  TaskStatus,
+} from "@/features/tasks/task.types";
+import type { TaskFiltersInterface } from "@/features/tasks/task.types";
+
 const DashboardPage = () => {
 
   const [
     searchParams,
   ] =
     useSearchParams();
+  const status =
+  searchParams.get("status");
 
-  const filters =
-    useMemo(
-      () => ({
-        status:
-          searchParams.get(
-            "status"
-          ) ??
-          undefined,
+const priority =
+  searchParams.get("priority");
 
-        priority:
-          searchParams.get(
-            "priority"
-          ) ??
-          undefined,
-      }),
-      [searchParams]
-    );
+const filters: TaskFiltersInterface = {
+  status:
+    status &&
+    ["TODO", "IN_PROGRESS", "DONE"].includes(status)
+      ? (status as TaskStatus)
+      : undefined,
+
+  priority:
+    priority &&
+    ["LOW", "MEDIUM", "HIGH"].includes(priority)
+      ? (priority as TaskPriority)
+      : undefined,
+};
 
   const {
     data: tasks,
@@ -85,7 +88,7 @@ const DashboardPage = () => {
         <CreateTaskDialog />
 
       </header>
-      <TaskStats tasks={tasks ?? []} />
+      <TaskStats/>
       <div className="mb-6 mt-2">
         <TaskFilters />
       </div>

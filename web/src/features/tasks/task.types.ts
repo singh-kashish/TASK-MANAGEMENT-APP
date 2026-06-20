@@ -45,7 +45,7 @@ export interface CreateTaskPayload {
 export interface UpdateTaskPayload
   extends Partial<CreateTaskPayload> {}
 
-export interface TaskFilters {
+export interface TaskFiltersInterface {
   status?: TaskStatus;
 
   priority?: TaskPriority;

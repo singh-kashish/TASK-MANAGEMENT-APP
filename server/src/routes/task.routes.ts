@@ -2,7 +2,7 @@ import { Router } from "express";
 import validate from "../middleware/validate.middleware";
 import { createTaskSchema, taskFiltersSchema, taskIdSchema, updateTaskSchema } from "../validators/task.validator";
 import authMiddleware from "../middleware/auth.middleware";
-import { addTaskController, deleteTaskController, getTaskController, getTasksController, updateTaskController } from "../controllers/task.controllers";
+import { addTaskController, deleteTaskController, getTaskController, getTasksController, getTaskStatsController, updateTaskController } from "../controllers/task.controllers";
 
 
 const router = Router()
@@ -18,6 +18,11 @@ router.get(
   "/",
   validate(taskFiltersSchema,"query"),
   getTasksController
+);
+router.get(
+  "/stats",
+  authMiddleware,
+  getTaskStatsController
 );
 
 router.get(
@@ -38,5 +43,6 @@ router.delete(
   validate(taskIdSchema,"params"),
   deleteTaskController
 );
+
 
 export default router;

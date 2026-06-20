@@ -16,14 +16,13 @@ import {
 import { taskKeys } from "./task.keys";
 
 import type {
-  CreateTaskPayload,
   Task,
-  TaskFilters,
+  TaskFiltersInterface,
   UpdateTaskPayload,
 } from "./task.types";
 
 export const useTasks = (
-  filters?: TaskFilters
+  filters?: TaskFiltersInterface
 ) =>
   useQuery({
     queryKey:

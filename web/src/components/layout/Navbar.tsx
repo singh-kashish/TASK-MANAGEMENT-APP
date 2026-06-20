@@ -77,6 +77,7 @@ export default function Navbar() {
                   : "dark"
               )
             }
+            className="hover:cursor-pointer"
           >
             {theme === "dark" ? (
               <Sun className="h-4 w-4" />
@@ -88,7 +89,7 @@ export default function Navbar() {
           {user && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline">
+                <Button variant="outline" className="cursor-pointer">
                   {user.email}
                 </Button>
               </DropdownMenuTrigger>
@@ -96,7 +97,7 @@ export default function Navbar() {
               <DropdownMenuContent align="end">
                 <DropdownMenuItem
                   onClick={handleLogout}
-                  className="cursor-pointer"
+                  className="cursor-pointer bg-gray-100 hover:bg-gray-200 hover:cursor-pointer dark:bg-stone-900 dark:hover:bg-stone-800 w-full m-0"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
 

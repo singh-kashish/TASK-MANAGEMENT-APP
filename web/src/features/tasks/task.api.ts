@@ -2,10 +2,11 @@ import { apiClient } from "@/api/client";
 
 import type {
   Task,
-  TaskFilters,
+  TaskFiltersInterface,
   CreateTaskPayload,
   UpdateTaskPayload,
 } from "./task.types";
+import type { TaskStats } from "@/types/task";
 
 interface ApiResponse<T> {
   success: boolean;
@@ -13,7 +14,7 @@ interface ApiResponse<T> {
 }
 
 export const getTasks = async (
-  filters?: TaskFilters
+  filters?: TaskFiltersInterface
 ): Promise<Task[]> => {
   const response =
     await apiClient.get<ApiResponse<Task[]>>(
@@ -58,3 +59,16 @@ export const deleteTask = async (
     `/tasks/${id}`
   );
 };
+
+export const getTaskStats =
+  async (): Promise<TaskStats> => {
+
+    const response =
+      await apiClient.get<
+        ApiResponse<TaskStats>
+      >(
+        "/tasks/stats"
+      );
+
+    return response.data.data;
+  };

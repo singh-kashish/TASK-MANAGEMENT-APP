@@ -18,7 +18,7 @@ import {
   updateTask,
   getTasks,
 } from "../services/task.services";
-
+import { getTaskStats } from "../services/taskStats.service";
 export const addTaskController =
   asyncHandler(
     async (
@@ -146,3 +146,19 @@ export const deleteTaskController =
       res.status(204).send();
     }
   );
+
+export const getTaskStatsController =
+  asyncHandler(async (
+    req,
+    res
+  ) => {
+    const stats =
+      await getTaskStats(
+        req.auth!.userId
+      );
+
+    res.json({
+      success: true,
+      data: stats,
+    });
+  });

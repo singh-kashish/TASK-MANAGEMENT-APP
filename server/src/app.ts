@@ -9,6 +9,7 @@ import { env } from "./config/env";
 import authRoutes from './routes/auth.routes'
 import errorMiddleware from "./middleware/error.middleware";
 import taskRoutes from "./routes/task.routes";
+import notFound from "./middleware/notFound";
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use("/api/health", healthRoutes);
 app.use("/api/auth",authRoutes);
 app.use("/api/tasks",taskRoutes)
 
+app.use(notFound);
 app.use(errorMiddleware);
 
 export default app;

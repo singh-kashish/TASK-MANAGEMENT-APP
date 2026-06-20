@@ -1,5 +1,3 @@
-import { useMemo } from "react";
-
 import {
   CheckCircle2,
   Clock3,
@@ -11,23 +9,33 @@ import {
 } from "lucide-react";
 
 import {
+  useSearchParams,
+} from "react-router-dom";
+
+import {
   Card,
   CardContent,
 } from "@/components/ui/card";
 
-import type { Task } from "@/features/tasks/task.types";
-
 import {
-  useSearchParams,
-} from "react-router-dom";
+  useTaskStats,
+} from "@/hooks/useTaskStats";
 
-interface Props {
-  tasks: Task[];
-}
+import type {
+  TaskStats as TaskStatsType,
+} from "../../types/task";
 
-export default function TaskStats({
-  tasks,
-}: Props) {
+const EMPTY_STATS: TaskStatsType = {
+  total: 0,
+  todo: 0,
+  inProgress: 0,
+  completed: 0,
+  pending: 0,
+  overdue: 0,
+  completionRate: 0,
+};
+
+export default function TaskStats() {
   const [
     searchParams,
     setSearchParams,
@@ -39,74 +47,14 @@ export default function TaskStats({
   const overdueFilter =
     searchParams.get("overdue");
 
-  const stats = useMemo(() => {
-    const now = new Date();
+  const {
+    data,
+    isLoading,
+    isError,
+  } = useTaskStats();
 
-    const total =
-      tasks.length;
-
-    const todo =
-      tasks.filter(
-        task =>
-          task.status ===
-          "TODO"
-      ).length;
-
-    const inProgress =
-      tasks.filter(
-        task =>
-          task.status ===
-          "IN_PROGRESS"
-      ).length;
-
-    const completed =
-      tasks.filter(
-        task =>
-          task.status ===
-          "DONE"
-      ).length;
-
-    const pending =
-      tasks.filter(
-        task =>
-          task.status !==
-          "DONE"
-      ).length;
-
-    const overdue =
-      tasks.filter(task => {
-        if (!task.dueDate) {
-          return false;
-        }
-
-        return (
-          task.status !==
-            "DONE" &&
-          new Date(
-            task.dueDate
-          ) < now
-        );
-      }).length;
-
-    const completionRate =
-      total === 0
-        ? 0
-        : Math.round(
-            (completed /
-              total) *
-              100
-          );
-
-    return {
-      total,
-      todo,
-      inProgress,
-      completed,
-      pending,
-      overdue,
-      completionRate,
-    };
-  }, [tasks]);
+  const stats =
+    data ?? EMPTY_STATS;
 
   const updateFilter = (
     status?: string,
@@ -148,30 +96,41 @@ export default function TaskStats({
     {
       label:
         "Total Tasks",
+
       value:
         stats.total,
+
       icon:
         ClipboardList,
+
       valueClass:
         "text-foreground",
+
       active:
         !activeStatus &&
         !overdueFilter,
+
       onClick: () =>
         updateFilter(),
     },
 
     {
-      label: "Todo",
+      label:
+        "Todo",
+
       value:
         stats.todo,
+
       icon:
         ListTodo,
+
       valueClass:
         "text-blue-600 dark:text-blue-400",
+
       active:
         activeStatus ===
         "TODO",
+
       onClick: () =>
         updateFilter(
           "TODO"
@@ -181,15 +140,20 @@ export default function TaskStats({
     {
       label:
         "In Progress",
+
       value:
         stats.inProgress,
+
       icon:
         Activity,
+
       valueClass:
         "text-amber-600 dark:text-amber-400",
+
       active:
         activeStatus ===
         "IN_PROGRESS",
+
       onClick: () =>
         updateFilter(
           "IN_PROGRESS"
@@ -199,15 +163,20 @@ export default function TaskStats({
     {
       label:
         "Completed",
+
       value:
         stats.completed,
+
       icon:
         CheckCircle2,
+
       valueClass:
         "text-green-600 dark:text-green-400",
+
       active:
         activeStatus ===
         "DONE",
+
       onClick: () =>
         updateFilter(
           "DONE"
@@ -217,28 +186,38 @@ export default function TaskStats({
     {
       label:
         "Pending",
+
       value:
         stats.pending,
+
       icon:
         Clock3,
+
       valueClass:
         "text-zinc-600 dark:text-zinc-300",
+
       active: false,
+
       onClick: () => {},
     },
 
     {
       label:
         "Overdue",
+
       value:
         stats.overdue,
+
       icon:
         AlertTriangle,
+
       valueClass:
         "text-red-600 dark:text-red-400",
+
       active:
         overdueFilter ===
         "true",
+
       onClick: () =>
         updateFilter(
           undefined,
@@ -249,14 +228,60 @@ export default function TaskStats({
     {
       label:
         "Completion Rate",
+
       value: `${stats.completionRate}%`,
-      icon: Percent,
+
+      icon:
+        Percent,
+
       valueClass:
         "text-violet-600 dark:text-violet-400",
+
       active: false,
+
       onClick: () => {},
     },
   ];
+
+  if (isLoading) {
+    return (
+      <section
+        aria-label="Task statistics"
+        className="
+          grid
+          gap-4
+          sm:grid-cols-2
+          xl:grid-cols-4
+        "
+      >
+        {Array.from({
+          length: 7,
+        }).map((_, index) => (
+          <Card key={index}>
+            <CardContent className="p-5">
+              <div className="space-y-3">
+                <div className="h-4 w-24 animate-pulse rounded bg-muted" />
+                <div className="h-8 w-16 animate-pulse rounded bg-muted" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </section>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Card>
+        <CardContent className="p-5">
+          <p className="text-sm text-red-500">
+            Failed to load task
+            statistics.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <section

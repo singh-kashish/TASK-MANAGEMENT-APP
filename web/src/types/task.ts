@@ -22,3 +22,12 @@ export interface Task {
 
   updatedAt: string;
 }
+export interface TaskStats {
+  total: number;
+  todo: number;
+  inProgress: number;
+  completed: number;
+  pending: number;
+  overdue: number;
+  completionRate: number;
+}
