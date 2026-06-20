@@ -18,7 +18,8 @@ import TaskList
 import {
   useTasks,
 } from "@/features/tasks/task.hooks";
-
+import TaskStats
+  from "@/components/tasks/TaskStats";
 const DashboardPage = () => {
 
   const [
@@ -84,8 +85,8 @@ const DashboardPage = () => {
         <CreateTaskDialog />
 
       </header>
-
-      <div className="mb-6">
+      <TaskStats tasks={tasks ?? []} />
+      <div className="mb-6 mt-2">
         <TaskFilters />
       </div>
       

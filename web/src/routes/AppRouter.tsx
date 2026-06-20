@@ -43,7 +43,7 @@ const AppRouter = () => {
           }
         >
           <Route
-            element={<AppShell />}
+            element={<AppShell  />}
           >
             <Route
               path="/dashboard"

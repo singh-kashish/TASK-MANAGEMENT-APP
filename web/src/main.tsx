@@ -40,7 +40,7 @@ ReactDOM.createRoot(
 
         <ThemeProvider>
 
-          <App />
+          <App/>
 
           <Toaster />
 

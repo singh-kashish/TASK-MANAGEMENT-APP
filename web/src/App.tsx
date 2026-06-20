@@ -6,7 +6,7 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <AppRouter />
+      <AppRouter  />
     </ErrorBoundary>
   );
 }

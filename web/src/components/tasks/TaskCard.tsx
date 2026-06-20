@@ -33,13 +33,23 @@ const priorityVariant = {
   HIGH:
     "bg-red-100 text-red-700",
 };
+const toDoVariant = {
+  DONE:
+    "bg-green-100 text-green-700",
+
+  IN_PROGRESS:
+    "bg-amber-100 text-amber-700",
+
+  TODO:
+    "bg-red-100 text-red-700",
+};
 
 const TaskCard = ({
   task,
 }: Props) => {
 
   return (
-    <article>
+    <article className="mx-2">
       <Card>
 
         <CardHeader>
@@ -80,7 +90,12 @@ const TaskCard = ({
           <div className="flex items-center justify-between">
 
             <Badge
-              variant="secondary"
+              className={
+                toDoVariant[
+                  task
+                    .status
+                ]
+              }
             >
               {
                 task.status
