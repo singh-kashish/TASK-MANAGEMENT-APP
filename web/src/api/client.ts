@@ -11,10 +11,7 @@ export const apiClient =
         "application/json",
     },
   });
-console.log(
-  "API URL:",
-  import.meta.env.VITE_API_URL
-);
+
 apiClient.interceptors.request.use(
   (config) => {
     const token =

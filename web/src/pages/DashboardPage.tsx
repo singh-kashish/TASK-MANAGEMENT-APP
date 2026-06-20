@@ -1,3 +1,4 @@
+
 import {
   useSearchParams,
 } from "react-router-dom";
@@ -71,9 +72,9 @@ const filters: TaskFiltersInterface = {
       );
     }
   return (
-    <main className="container mx-auto max-w-5xl py-8">
+    <main className="container mx-auto max-w-5xl">
 
-      <header className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <header className="mb-2 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 
         <div>
           <h1 className="text-3xl font-bold">
@@ -88,7 +89,7 @@ const filters: TaskFiltersInterface = {
         <CreateTaskDialog />
 
       </header>
-      <TaskStats/>
+      <TaskStats  />
       <div className="mb-6 mt-2">
         <TaskFilters />
       </div>

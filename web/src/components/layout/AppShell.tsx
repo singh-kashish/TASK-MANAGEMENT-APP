@@ -7,7 +7,7 @@ export default function AppShell() {
     <div className="min-h-screen bg-background flex-1 overflow-x-hidden">
       <Navbar />
 
-      <main className="mx-auto max-w-7xl p-y-4 lg:p-x-4 lg:p-6">
+      <main className="mx-auto max-w-7xl p-y-2 lg:p-x-4 lg:p-0">
         <Outlet />
       </main>
     </div>
