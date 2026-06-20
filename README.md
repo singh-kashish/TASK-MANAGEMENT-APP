@@ -198,13 +198,20 @@ GET /api/tasks/stats
 
 ## Screenshots
 
-To add screenshots
+<img width="2940" height="1564" alt="image" src="https://github.com/user-attachments/assets/4c746abd-338e-4086-a8d5-0fec9378ed7d" />
+
 
 ### Dashboard
+<img width="2936" height="1600" alt="image" src="https://github.com/user-attachments/assets/1d9df7e1-1f4a-4409-8c2c-90d625542aea" />
 
 ### Login
+<img width="742" height="1328" alt="image" src="https://github.com/user-attachments/assets/44720a17-7083-44fc-8db5-7c42b274c6b0" />
 
 ### Task Management
+<img width="2186" height="1542" alt="image" src="https://github.com/user-attachments/assets/8707e5bc-7efa-420f-9c1f-368e6a39b860" />
+<img width="2186" height="1542" alt="image" src="https://github.com/user-attachments/assets/f7cb4d28-87e4-4473-9387-c20b7c370920" />
+<img width="2186" height="1542" alt="image" src="https://github.com/user-attachments/assets/5549bea7-ea3d-42fb-b3a4-5d12ddbdcbc9" />
+<img width="736" height="1206" alt="image" src="https://github.com/user-attachments/assets/279fcc5d-4196-4e9c-bb4a-bdd8cb193920" />
 
 ---
 
