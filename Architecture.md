@@ -2,45 +2,126 @@
 
 ## Design Goals
 
-The application was designed with the following goals:
+TaskFlow was designed with the following principles:
 
 - Separation of concerns
 - Scalability
 - Maintainability
 - Type safety
+- Security
 - Production readiness
+
+The application follows a modern full-stack architecture with a React frontend, Express API backend, MongoDB database, Dockerized development environment, and automated CI/CD workflows.
+
+---
+
+# System Architecture
+
+```text
+┌──────────────────────┐
+│      React App       │
+│ (Vite + TypeScript)  │
+└──────────┬───────────┘
+           │
+           │ HTTP / JSON
+           │ JWT Access Token
+           ▼
+┌──────────────────────┐
+│    Express API       │
+│ Authentication       │
+│ Validation           │
+│ Business Logic       │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│      MongoDB         │
+│      Mongoose        │
+└──────────────────────┘
+```
 
 ---
 
 # Frontend Architecture
 
-The frontend follows a feature-driven architecture.
+The frontend follows a feature-based architecture.
 
 ```text
 src/
 
-api/
-
-components/
-
-features/
-    auth/
-    tasks/
-
-hooks/
-
-pages/
-
-routes/
-
-utils/
+├── api/
+├── components/
+├── features/
+│   ├── auth/
+│   └── tasks/
+├── hooks/
+├── pages/
+├── routes/
+├── store/
+└── utils/
 ```
+
+## Design Rationale
+
+### Features
+
+Business logic is grouped by domain rather than by file type.
+
+Examples:
+
+- Authentication
+- Tasks
 
 Benefits:
 
-- Business logic remains close to features.
-- Easier scaling as new domains are added.
-- Reduced coupling between modules.
+- Easier scaling
+- Better maintainability
+- Reduced coupling
+
+### Components
+
+Reusable UI components shared across features.
+
+Examples:
+
+- Dialogs
+- Inputs
+- Layout components
+- Table components
+
+### Store
+
+Redux Toolkit manages client-side application state.
+
+Examples:
+
+- User information
+- Authentication state
+- UI state
+
+### API Layer
+
+Axios-based abstraction for backend communication.
+
+Benefits:
+
+- Centralized request handling
+- Shared interceptors
+- Consistent error handling
+
+### TanStack Query
+
+Server state management is handled using TanStack Query.
+
+Responsibilities:
+
+- API caching
+- Background refetching
+- Loading states
+- Error states
+- Cache invalidation
+
+This reduces Redux complexity and improves data synchronization.
 
 ---
 
@@ -49,40 +130,150 @@ Benefits:
 The backend follows a layered architecture.
 
 ```text
-controllers/
-
-services/
-
-models/
-
 routes/
-
+    ↓
 validators/
-
+    ↓
 middleware/
+    ↓
+controllers/
+    ↓
+services/
+    ↓
+models/
+    ↓
+MongoDB
 ```
 
-Request Flow:
+## Responsibilities
 
-Route
-→ Validation
-→ Authentication
-→ Controller
-→ Service
-→ Database
+### Routes
+
+Define API endpoints and middleware chains.
+
+### Validators
+
+Validate request body, query parameters, and route parameters using Zod.
+
+### Middleware
+
+Cross-cutting concerns such as:
+
+- Authentication
+- Error handling
+- Validation
+- Security
+
+### Controllers
+
+Handle HTTP concerns only:
+
+- Request
+- Response
+- Status codes
+
+Controllers remain intentionally thin.
+
+### Services
+
+Contain business logic.
+
+Examples:
+
+- Login user
+- Register user
+- Create task
+- Calculate statistics
+
+### Models
+
+Mongoose schemas and database interaction layer.
+
+---
+
+# Authentication Flow
+
+TaskFlow uses JWT-based authentication with refresh tokens.
+
+```text
+User Login
+    │
+    ▼
+Validate Credentials
+    │
+    ▼
+Generate Tokens
+    │
+    ├── Access Token
+    │      returned in JSON response
+    │
+    └── Refresh Token
+           stored in HttpOnly Cookie
+```
+
+## Login Flow
+
+1. User submits email and password.
+2. Server validates credentials.
+3. Password is verified using bcryptjs.
+4. Access token is generated.
+5. Refresh token is generated.
+6. Refresh token is stored in an HttpOnly cookie.
+7. Access token is returned in the response body.
+8. User profile is stored in localStorage.
+9. Access token is attached to future API requests using Axios.
+
+## Protected Request Flow
+
+```text
+React App
+    │
+    │ Authorization: Bearer <token>
+    ▼
+Auth Middleware
+    │
+    ▼
+JWT Verification
+    │
+    ├── Valid
+    │      ↓
+    │   Continue Request
+    │
+    └── Invalid
+           ↓
+         401
+```
+
+## Security Decisions
+
+### Access Token
+
+Stored in application state and reused for authenticated requests.
+
+### Refresh Token
+
+Stored in HttpOnly cookie.
+
+Cookie configuration:
+
+```text
+httpOnly = true
+sameSite = strict
+secure = production only
+maxAge = 7 days
+```
 
 Benefits:
 
-- Controllers remain thin.
-- Business logic lives in services.
-- Validation remains reusable.
-- Easier testing.
+- Prevents JavaScript access
+- Reduces XSS exposure
+- Improves session security
 
 ---
 
 # Database Design
 
-## User
+## User Collection
 
 ```text
 User
@@ -94,9 +285,15 @@ createdAt
 updatedAt
 ```
 
+### Notes
+
+- Email is unique.
+- Passwords are never stored in plain text.
+- Passwords are hashed using bcryptjs.
+
 ---
 
-## Task
+## Task Collection
 
 ```text
 Task
@@ -104,104 +301,183 @@ Task
 _id
 title
 description
-status
 priority
+status
 dueDate
-user
+userId
 createdAt
 updatedAt
 ```
 
-Relationship:
+### Relationship
 
+```text
 User (1)
-|
-|
-v
+   │
+   │ owns
+   ▼
 Task (Many)
+```
+
+Each task belongs to exactly one authenticated user.
 
 ---
 
-# Authentication Flow
+# Database Indexing Strategy
 
-1. User logs in.
-2. Server validates credentials.
-3. JWT access token is generated.
-4. Frontend stores token.
-5. Axios interceptor attaches token.
-6. Protected APIs validate JWT.
-7. Unauthorized requests return 401.
+The Task collection uses compound indexes to optimize filtering and sorting.
+
+```text
+{ userId: 1, status: 1 }
+
+{ userId: 1, priority: 1 }
+
+{ userId: 1, dueDate: 1 }
+
+{ userId: 1, createdAt: -1 }
+
+{ userId: 1, status: 1, priority: 1 }
+```
+
+Benefits:
+
+- Faster dashboard queries
+- Faster filtering
+- Faster sorting
+- User-scoped lookups
 
 ---
 
 # Statistics Design
 
-Initially statistics were calculated from the filtered task list on the frontend.
+Dashboard statistics are generated by a dedicated API endpoint.
 
-Issue:
-
-Applying filters changed dashboard metrics.
-
-Solution:
-
-Dedicated backend endpoint:
-
+```text
 GET /api/tasks/stats
+```
 
-MongoDB aggregation pipeline calculates:
+Metrics include:
 
-- Total
-- Todo
-- In Progress
-- Completed
-- Pending
-- Overdue
+- Total Tasks
+- Todo Tasks
+- In Progress Tasks
+- Completed Tasks
+- Pending Tasks
+- Overdue Tasks
 - Completion Rate
+
+## Design Decision
+
+Statistics are calculated on the backend instead of the frontend.
 
 Benefits:
 
 - Single database query
-- Accurate metrics
+- Consistent results
 - Independent of UI filters
+- Reduced frontend complexity
+
+MongoDB aggregation pipelines are used for efficient computation.
 
 ---
 
-# Trade-offs
+# Security Architecture
 
-## Chosen
+The application implements multiple security layers.
 
-MongoDB Aggregation
+### Authentication
 
-Pros:
+- JWT Access Tokens
+- Refresh Tokens
 
-- Single query
-- Fast dashboard metrics
+### Password Security
 
-Cons:
+- bcryptjs hashing
 
-- More complex query logic
+### Input Validation
+
+- Zod schemas
+- Request validation middleware
+
+### HTTP Security
+
+- Helmet
+- CORS
+- Secure cookies
+
+### Error Handling
+
+- Centralized error middleware
+- Consistent API responses
 
 ---
 
-## Chosen
+# Trade-Offs
 
-JWT Access Tokens
+## Why JWT Instead of Sessions?
 
-Pros:
+### Benefits
 
 - Stateless
-- Scalable
+- Easy horizontal scaling
+- Works well with APIs
 
-Cons:
+### Drawbacks
 
-- Requires refresh token implementation for long sessions
+- Token management complexity
+- Requires refresh token strategy
 
 ---
 
-## Future Enhancements
+## Why MongoDB?
+
+### Benefits
+
+- Flexible schema design
+- Rapid development
+- Strong Mongoose ecosystem
+
+### Drawbacks
+
+- Less rigid schema enforcement than SQL databases
+
+---
+
+## Why TanStack Query Instead of Redux for Server State?
+
+### Benefits
+
+- Automatic caching
+- Request deduplication
+- Background synchronization
+- Built-in loading/error states
+
+### Drawbacks
+
+- Additional learning curve
+
+---
+
+## Why Layered Backend Architecture?
+
+### Benefits
+
+- Easier testing
+- Better maintainability
+- Clear separation of concerns
+
+### Drawbacks
+
+- More files and abstraction compared to a small application
+
+---
+
+# Future Enhancements
 
 - Refresh Token Rotation
-- RBAC
-- Event-driven notifications
-- Distributed caching
-- Observability and metrics
+- Role-Based Access Control (RBAC)
+- Real-Time Updates with WebSockets
+- Activity Audit Logs
+- OpenAPI / Swagger Documentation
+- Distributed Caching
+- Observability and Metrics
