@@ -8,6 +8,7 @@ import {
 import type {
   Task,
 } from "@/features/tasks/task.types";
+import React from "react";
 
 interface Props {
   tasks?: Task[];
@@ -74,4 +75,4 @@ const TaskList = ({
   );
 };
 
-export default TaskList;
+export default React.memo(TaskList);

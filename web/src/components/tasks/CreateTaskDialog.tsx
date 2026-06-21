@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import {
   Dialog,
@@ -18,6 +18,7 @@ import {
   useCreateTask,
 } from "@/features/tasks/task.hooks";
 import { Plus } from "lucide-react";
+import type { CreateTaskPayload } from "@/features/tasks/task.types";
 
 const CreateTaskDialog = () => {
 
@@ -26,7 +27,13 @@ const CreateTaskDialog = () => {
 
   const mutation =
     useCreateTask();
-
+const handleSubmit = useCallback(
+  async (values: CreateTaskPayload) => {
+    await mutation.mutateAsync(values);
+    setOpen(false);
+  },
+  [mutation, setOpen]
+);
   return (
     <Dialog
       open={open}
@@ -55,17 +62,7 @@ const CreateTaskDialog = () => {
           isSubmitting={
             mutation.isPending
           }
-          onSubmit={async (
-            values
-          ) => {
-            await mutation.mutateAsync(
-              values
-            );
-
-            setOpen(
-              false
-            );
-          }}
+          onSubmit={handleSubmit}
         />
       </DialogContent>
     </Dialog>

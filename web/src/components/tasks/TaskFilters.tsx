@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import React from "react";
 
 const TaskFilters = () => {
 
@@ -141,4 +142,4 @@ const TaskFilters = () => {
   );
 };
 
-export default TaskFilters;
+export default React.memo(TaskFilters);

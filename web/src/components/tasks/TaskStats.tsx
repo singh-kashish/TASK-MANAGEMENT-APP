@@ -24,6 +24,7 @@ import {
 import type {
   TaskStats as TaskStatsType,
 } from "../../types/task";
+import React from "react";
 
 const EMPTY_STATS: TaskStatsType = {
   total: 0,
@@ -35,7 +36,7 @@ const EMPTY_STATS: TaskStatsType = {
   completionRate: 0,
 };
 
-export default function TaskStats() {
+function TaskStats() {
   const [
     searchParams,
     setSearchParams,
@@ -342,3 +343,4 @@ export default function TaskStats() {
     </section>
   );
 }
+export default React.memo(TaskStats);

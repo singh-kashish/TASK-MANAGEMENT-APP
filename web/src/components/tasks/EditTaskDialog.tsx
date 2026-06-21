@@ -1,4 +1,5 @@
-import {
+import React, {
+  useCallback,
   useState,
 } from "react";
 
@@ -16,6 +17,7 @@ import {
 
 import type {
   Task,
+  UpdateTaskPayload,
 } from "@/features/tasks/task.types";
 
 import TaskForm from "./TaskForm";
@@ -37,7 +39,21 @@ const EditTaskDialog = ({
 
   const mutation =
     useUpdateTask();
+  const submitHandler = useCallback(async (
+            values:UpdateTaskPayload
+          ) => {
+            await mutation.mutateAsync(
+              {
+                id: task._id,
+                payload:
+                  values,
+              }
+            );
 
+            setOpen(
+              false
+            );
+          },[setOpen,mutation]);
   return (
     <Dialog
       open={open}
@@ -69,25 +85,11 @@ const EditTaskDialog = ({
           isSubmitting={
             mutation.isPending
           }
-          onSubmit={async (
-            values
-          ) => {
-            await mutation.mutateAsync(
-              {
-                id: task._id,
-                payload:
-                  values,
-              }
-            );
-
-            setOpen(
-              false
-            );
-          }}
+          onSubmit={submitHandler}
         />
       </DialogContent>
     </Dialog>
   );
 };
 
-export default EditTaskDialog;
+export default React.memo(EditTaskDialog);

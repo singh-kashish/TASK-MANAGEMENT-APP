@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -189,4 +189,4 @@ const TaskForm = ({
   );
 };
 
-export default TaskForm;
+export default React.memo(TaskForm);
