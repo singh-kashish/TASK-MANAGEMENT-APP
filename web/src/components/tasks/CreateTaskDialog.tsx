@@ -69,4 +69,4 @@ const handleSubmit = useCallback(
   );
 };
 
-export default CreateTaskDialog;
+export default React.memo(CreateTaskDialog);
