@@ -304,6 +304,8 @@ npm run dev
 # Docker Setup
 
 ```bash
+touch server/.env
+Add environment variables as defined in .env.example file.
 docker compose up --build
 ```
 
@@ -477,6 +479,8 @@ Services:
 Start the full stack:
 
 ```bash
+touch server/.env
+Add environment variables as defined in .env.example file.
 docker compose up --build
 ```
 
