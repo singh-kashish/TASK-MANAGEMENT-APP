@@ -89,15 +89,15 @@ export default function Navbar() {
           {user && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="cursor-pointer">
+                <Button variant="outline" className="cursor-pointer bg-gray-100 hover:bg-gray-200  dark:bg-stone-900 dark:hover:bg-stone-800 ">
                   {user.email}
                 </Button>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="cursor-pointer bg-gray-100 hover:bg-gray-200  dark:bg-stone-900 dark:hover:bg-stone-800 w-full m-0">
                 <DropdownMenuItem
                   onClick={handleLogout}
-                  className="cursor-pointer bg-gray-100 hover:bg-gray-200 hover:cursor-pointer dark:bg-stone-900 dark:hover:bg-stone-800 w-full m-0"
+                  className="cursor-pointer"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
 

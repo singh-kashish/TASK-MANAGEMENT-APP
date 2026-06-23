@@ -87,8 +87,8 @@ const TaskCard = ({
 
         <CardContent>
 
-          <div className="flex items-center justify-between">
-
+          <div className="flex items-center justify-between ">
+              
             <Badge
               className={
                 toDoVariant[

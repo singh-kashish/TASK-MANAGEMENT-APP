@@ -34,7 +34,7 @@ export const loginUser =
         "/auth/login",
         payload
       );
-
+      console.log(response);
     return response.data;
   };
 

@@ -104,7 +104,7 @@ type FormData = z.infer<typeof schema>;
           ? "Account created successfully"
           : "Logged in successfully"
       );
-
+      console.log(response)
       navigate("/dashboard", { replace: true });
     } catch (error: any) {
       const message =

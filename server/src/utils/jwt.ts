@@ -1,16 +1,8 @@
-import jwt, {
-  SignOptions,
-} from "jsonwebtoken";
-
+import jwt, {SignOptions} from "jsonwebtoken";
 import { env } from "../config/env";
+import type {JwtPayload} from "../types/auth.types";
 
-import type {
-  JwtPayload,
-} from "../types/auth.types";
-
-export const generateAccessToken = (
-  payload: JwtPayload
-): string => {
+export const generateAccessToken = (payload: JwtPayload): string => {
   return jwt.sign(
     payload,
     env.JWT_ACCESS_SECRET,
@@ -21,9 +13,7 @@ export const generateAccessToken = (
   );
 };
 
-export const generateRefreshToken = (
-  payload: JwtPayload
-): string => {
+export const generateRefreshToken = (payload: JwtPayload): string => {
   return jwt.sign(
     payload,
     env.JWT_REFRESH_SECRET,
@@ -34,20 +24,16 @@ export const generateRefreshToken = (
   );
 };
 
-export const verifyAccessToken = (
-  token: string
-): unknown => {
+export const verifyAccessToken = (token: string): JwtPayload => {
   return jwt.verify(
     token,
     env.JWT_ACCESS_SECRET
-  );
+  ) as JwtPayload;
 };
 
-export const verifyRefreshToken = (
-  token: string
-): unknown => {
+export const verifyRefreshToken = (token: string): JwtPayload => {
   return jwt.verify(
     token,
     env.JWT_REFRESH_SECRET
-  );
+  ) as JwtPayload;
 };
