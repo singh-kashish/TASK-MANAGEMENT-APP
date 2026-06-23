@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import {registerUser,loginUser,deleteAndCreateRefreshToken, signoutUser,} from "../services/auth.services";
+import {registerUser,loginUser,deleteAndCreateRefreshToken, signoutUser, signoutAllService,} from "../services/auth.services";
 import {RegisterUserInput,LoginUserInput} from "../validators/auth.validator";
 import { refreshCookieOptions } from "../utils/cookies";
 import { asyncHandler } from "../utils/asyncHandler";
@@ -107,3 +107,13 @@ export const signoutController = asyncHandler(
     res.status(204).send(); 
   }
 );
+
+export const signoutAllController = asyncHandler(async(req:Request,res:Response)=>{
+  const userId = req.auth!.userId;
+  await signoutAllService(userId);
+  res.cookie("refreshToken", "", {
+      ...refreshCookieOptions,
+      maxAge: 0,
+  });
+  res.status(204).send()
+})

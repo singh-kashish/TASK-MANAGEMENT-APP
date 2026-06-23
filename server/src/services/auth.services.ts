@@ -4,7 +4,7 @@ import {
   hashPassword,
   comparePassword,
 } from "../utils/password";
-import { issueTokens, storeRefreshToken } from "../utils/tokenUtils";
+import { issueTokens, revokeAllRefreshTokens, storeRefreshToken } from "../utils/tokenUtils";
 import { buildAuthResponse } from "../utils/authResponse";
 import type {RegisterUserInput,LoginUserInput,JwtPayload} from "../validators/auth.validator";
 import { ObjectId } from "mongoose";
@@ -95,3 +95,7 @@ export const signoutUser = async (userId: string, refreshToken: string) => {
     }
   );
 };
+
+export const signoutAllService = async(userId:string)=>{
+  return await revokeAllRefreshTokens(userId);
+}

@@ -4,7 +4,7 @@ import validate from "../middleware/validate.middleware";
 
 import {registerUserSchema,loginUserSchema} from "../validators/auth.validator";
 
-import {registerController,loginController, meController, refreshAuthController, signoutController} from "../controllers/auth.controllers";
+import {registerController,loginController, meController, refreshAuthController, signoutController, signoutAllController} from "../controllers/auth.controllers";
 import authMiddleware from "../middleware/auth.middleware";
 
 const router = Router();
@@ -19,4 +19,6 @@ router.get("/me",authMiddleware,meController)
 router.post("/refresh",refreshAuthController)
 
 router.post("/signout",authMiddleware,signoutController);
+router.post("/signout-all",authMiddleware,signoutAllController);
+
 export default router;

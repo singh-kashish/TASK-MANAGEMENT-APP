@@ -150,4 +150,11 @@ const rotateRefreshToken = async (
   return { accessToken, refreshToken };
 };
 
-export {issueTokens,hashRefreshToken,storeRefreshToken,rotateRefreshToken}
+const revokeAllRefreshTokens = async (userId: string): Promise<void> => {
+  await UserModel.updateOne(
+    { _id: userId },
+    { $set: { refreshTokens: [] } }
+  );
+};
+
+export {issueTokens,hashRefreshToken,storeRefreshToken,rotateRefreshToken,revokeAllRefreshTokens}
