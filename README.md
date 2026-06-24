@@ -691,6 +691,15 @@ Also sets:
 
 - Refresh Token HttpOnly Cookie
 
+## POST /api/auth/signout
+  Signs out user from client(access token deleted from local storage & redux state cleared), deletes refresh token hash from their collection.
+
+## POST /api/auth/signout-all
+  Signs out user from client(access token deleted from local storage & redux state cleared), deletes all refresh token hashes from their collection.
+
+## GET /api/auth/me
+  Uses Auth middleware to find user details on server and returns back the same to client.
+  
 ## GET /api/tasks
 
 Returns all tasks for the authenticated user.
