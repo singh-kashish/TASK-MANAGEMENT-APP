@@ -44,7 +44,7 @@ const handleSubmit = useCallback(
       <DialogTrigger
         asChild
       >
-        <Button variant={"outline"} className="hover:bg-gray-100 hover:cursor-pointer dark:hover:bg-stone-900">
+        <Button variant={"outline"} className="hover:bg-gray-100 cursor-pointer dark:hover:bg-stone-900 m-2">
           <Plus />
           Create Task
         </Button>
