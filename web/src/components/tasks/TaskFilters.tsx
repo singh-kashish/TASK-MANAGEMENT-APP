@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import React from "react";
 
 const TaskFilters = () => {
 
@@ -48,7 +49,7 @@ const TaskFilters = () => {
   return (
     <section
       aria-label="Task Filters"
-      className="flex flex-wrap gap-4"
+      className="flex flex-wrap gap-4 m-2"
     >
 
       <Select
@@ -67,7 +68,7 @@ const TaskFilters = () => {
           )
         }
       >
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-45 hover:bg-gray-100 cursor-pointer dark:hover:bg-stone-900">
           <SelectValue />
         </SelectTrigger>
 
@@ -106,7 +107,7 @@ const TaskFilters = () => {
           )
         }
       >
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-45 hover:bg-gray-100 cursor-pointer dark:hover:bg-stone-900">
           <SelectValue />
         </SelectTrigger>
 
@@ -141,4 +142,4 @@ const TaskFilters = () => {
   );
 };
 
-export default TaskFilters;
+export default React.memo(TaskFilters);

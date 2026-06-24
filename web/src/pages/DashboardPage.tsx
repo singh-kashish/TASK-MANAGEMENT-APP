@@ -72,7 +72,7 @@ const filters: TaskFiltersInterface = {
       );
     }
   return (
-    <main className="container mx-auto max-w-5xl">
+    <main className="container mx-auto max-w-5xl lg:px-4">
 
       <header className="mb-2 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 

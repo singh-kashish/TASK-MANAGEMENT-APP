@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -180,7 +180,7 @@ const TaskForm = ({
 
       <Button
         type="submit"
-        className="w-full hover:bg-gray-100 hover:cursor-pointer dark:hover:bg-stone-900"
+        className="w-full border bg-gray-100 hover:bg-gray-200 cursor-pointer dark:bg-stone-800 hover:dark:bg-stone-900"
         disabled={isSubmitting}
       >
         {submitLabel}
@@ -189,4 +189,4 @@ const TaskForm = ({
   );
 };
 
-export default TaskForm;
+export default React.memo(TaskForm);

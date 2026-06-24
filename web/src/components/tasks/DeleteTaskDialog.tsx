@@ -43,7 +43,7 @@ const DeleteTaskDialog = ({
         asChild
       >
         <Button
-          variant="destructive"
+          variant="destructive" className="bg-red-400 cursor-pointer hover:bg-red-500 px-2 py-1 rounded-lg"
         >
           Delete
         </Button>
@@ -66,7 +66,7 @@ const DeleteTaskDialog = ({
 
         <AlertDialogFooter>
 
-          <AlertDialogCancel>
+          <AlertDialogCancel className="hover:bg-gray-100 hover:cursor-pointer dark:hover:bg-stone-900">
             Cancel
           </AlertDialogCancel>
 
@@ -74,6 +74,7 @@ const DeleteTaskDialog = ({
             onClick={
               handleDelete
             }
+            className="bg-red-400 cursor-pointer hover:bg-red-500 px-2 py-1 rounded-lg"
           >
             Delete
           </AlertDialogAction>

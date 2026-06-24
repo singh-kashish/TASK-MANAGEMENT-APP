@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@/store";
 import { SquareSpin } from "@/components/ui/square-spin";
 
-const ProtectedRoute = () => {
+function PublicOnlyRoute() {
   const { isAuthenticated, isBootstrapping } = useSelector(
     (state: RootState) => state.auth
   );
@@ -14,10 +14,9 @@ const ProtectedRoute = () => {
       </div>
     );
   }
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
   }
   return <Outlet />;
-};
-
-export default ProtectedRoute;
+}
+export default PublicOnlyRoute;

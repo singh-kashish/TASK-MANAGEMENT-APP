@@ -1,29 +1,9 @@
-import {
-  CheckCircle2,
-  Clock3,
-  AlertTriangle,
-  ListTodo,
-  Activity,
-  ClipboardList,
-  Percent,
-} from "lucide-react";
-
-import {
-  useSearchParams,
-} from "react-router-dom";
-
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
-
-import {
-  useTaskStats,
-} from "@/hooks/useTaskStats";
-
-import type {
-  TaskStats as TaskStatsType,
-} from "../../types/task";
+import {CheckCircle2,Clock3,AlertTriangle,ListTodo,Activity,ClipboardList,Percent,} from "lucide-react";
+import {useSearchParams} from "react-router-dom";
+import {Card,CardContent} from "@/components/ui/card";
+import {useTaskStats} from "@/hooks/useTaskStats";
+import type {TaskStats as TaskStatsType} from "../../types/task";
+import React from "react";
 
 const EMPTY_STATS: TaskStatsType = {
   total: 0,
@@ -35,7 +15,7 @@ const EMPTY_STATS: TaskStatsType = {
   completionRate: 0,
 };
 
-export default function TaskStats() {
+function TaskStats() {
   const [
     searchParams,
     setSearchParams,
@@ -288,7 +268,7 @@ export default function TaskStats() {
       aria-label="Task statistics"
       className="
         grid
-        gap-4
+        gap-2
         sm:grid-cols-2
         xl:grid-cols-4
       "
@@ -309,6 +289,7 @@ export default function TaskStats() {
             }
             className={`
               cursor-pointer
+              m-2
               transition-all
               hover:shadow-md
               hover:-translate-y-0.5
@@ -333,7 +314,7 @@ export default function TaskStats() {
               </div>
 
               <div className="rounded-xl border border-border p-3">
-                <Icon className="h-5 w-5 text-muted-foreground" />
+                <Icon className={`h-5 w-5 text-muted-foreground ${valueClass}`} />
               </div>
             </CardContent>
           </Card>
@@ -342,3 +323,4 @@ export default function TaskStats() {
     </section>
   );
 }
+export default React.memo(TaskStats);

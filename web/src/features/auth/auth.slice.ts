@@ -1,101 +1,45 @@
-import {
-  createSlice,
-  type PayloadAction,
-} from "@reduxjs/toolkit";
-
-export interface User {
-  id: string;
-  email: string;
-}
-
-interface AuthState {
-  user: User | null;
-  accessToken: string | null;
-  isAuthenticated: boolean;
-}
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import type { AuthState, User } from "@/features/auth/auth";
+import { authStorage } from "@/utils/authHelper";
 
 const getInitialState = (): AuthState => {
-  const storedUser =
-    localStorage.getItem("user");
-
-  const storedToken =
-    localStorage.getItem(
-      "accessToken"
-    );
-
+  const token = authStorage.getToken();
   return {
-    user: storedUser
-      ? JSON.parse(storedUser)
-      : null,
-
-    accessToken:
-      storedToken ?? null,
-
-    isAuthenticated:
-      !!storedToken,
+    user: null,
+    accessToken: token ?? null,
+    isAuthenticated: !!token,
+    isBootstrapping: true,
   };
 };
 
-const initialState =
-  getInitialState();
+const initialState: AuthState = getInitialState();
 
 const authSlice = createSlice({
   name: "auth",
-
   initialState,
-
   reducers: {
-    loginSuccess: (
+    setCredentials(
       state,
-      action: PayloadAction<{
-        user: User;
-        accessToken: string;
-      }>
-    ) => {
-      state.user =
-        action.payload.user;
-
-      state.accessToken =
-        action.payload.accessToken;
-
-      state.isAuthenticated =
-        true;
-
-      localStorage.setItem(
-        "user",
-        JSON.stringify(
-          action.payload.user
-        )
-      );
-
-      localStorage.setItem(
-        "accessToken",
-        action.payload.accessToken
-      );
+      action: PayloadAction<{ user: User; accessToken: string }>
+    ) {
+      state.user = action.payload.user;
+      state.accessToken = action.payload.accessToken;
+      state.isAuthenticated = true;
     },
-
-    logout: (state) => {
+    setAccessToken(state, action: PayloadAction<string | null>) {
+      state.accessToken = action.payload;
+      state.isAuthenticated = !!action.payload;
+    },
+    logout(state) {
       state.user = null;
-
       state.accessToken = null;
-
-      state.isAuthenticated =
-        false;
-
-      localStorage.removeItem(
-        "user"
-      );
-
-      localStorage.removeItem(
-        "accessToken"
-      );
+      state.isAuthenticated = false;
+    },
+    finishBootstrap(state) {
+      state.isBootstrapping = false;
     },
   },
 });
 
-export const {
-  loginSuccess,
-  logout,
-} = authSlice.actions;
-
+export const { setCredentials, setAccessToken, logout, finishBootstrap } = authSlice.actions;
 export default authSlice.reducer;

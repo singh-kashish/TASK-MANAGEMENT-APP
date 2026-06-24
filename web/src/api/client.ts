@@ -1,56 +1,68 @@
-import axios from "axios";
+// src/api/client.ts
+import axios, { AxiosError } from "axios";
+import { authStorage, refreshAccessToken } from "@/utils/authHelper";
+import { store } from "@/store";
+import { setAccessToken, logout } from "@/features/auth/auth.slice";
 
-export const apiClient =
-  axios.create({
-    baseURL:
-      import.meta.env
-        .VITE_API_URL,
+export const apiClient = axios.create({baseURL: import.meta.env.VITE_API_URL,withCredentials: true,
+  headers: {"Content-Type": "application/json",},});
 
-    headers: {
-      "Content-Type":
-        "application/json",
-    },
-  });
-
-apiClient.interceptors.request.use(
-  (config) => {
-    const token =
-      localStorage.getItem(
-        "accessToken"
-      );
-
-    if (token) {
-      config.headers.Authorization =
-        `Bearer ${token}`;
-    }
-
-    return config;
+apiClient.interceptors.request.use((config) => {
+  const token = authStorage.getToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
-);
+  return config;
+});
 
-apiClient.interceptors.response.use(
-  (response) => response,
+let isRefreshing = false;
+let pendingRequests: ((token: string | null) => void)[] = [];
 
-  (error) => {
+const processQueue = (token: string | null) => {
+  pendingRequests.forEach((cb) => cb(token));
+  pendingRequests = [];
+};
 
-    if (
-      error.response?.status === 401
-    ) {
+apiClient.interceptors.response.use((response) => response, async (error: AxiosError) => {
+    const originalRequest: any = error.config;
+    const status = error.response?.status;
+    const url = originalRequest?.url as string | undefined;
+    const isRefreshCall = url?.includes("/auth/refresh");
 
-      localStorage.removeItem(
-        "accessToken"
-      );
+    if (status === 401 && !originalRequest._retry && !isRefreshCall) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          pendingRequests.push((newToken) => {
+            if (!newToken) {
+              reject(error);
+              return;
+            }
+            originalRequest.headers.Authorization = `Bearer ${newToken}`;
+            resolve(apiClient(originalRequest));
+          });
+        });
+      }
 
-      localStorage.removeItem(
-        "user"
-      );
+      originalRequest._retry = true;
+      isRefreshing = true;
 
-      window.location.href =
-        "/login";
+      try {
+        const newToken = await refreshAccessToken();
+        store.dispatch(setAccessToken(newToken));
+        processQueue(newToken);
+
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        return apiClient(originalRequest);
+      } catch (e) {
+        processQueue(null);
+        authStorage.clear();
+        store.dispatch(logout());
+        return Promise.reject(e);
+      } finally {
+        isRefreshing = false;
+      }
     }
 
-    return Promise.reject(
-      error
-    );
+    return Promise.reject(error);
   }
 );
