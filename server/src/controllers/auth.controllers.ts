@@ -50,7 +50,8 @@ export const loginController = asyncHandler(
   });
 
   export const meController = asyncHandler(async(req:Request,res:Response)=>{
-      res.json(req.auth)
+    res.set("Cache-Control", "no-store");
+    res.json(req.auth)
   })
 
 export const refreshAuthController = asyncHandler(
