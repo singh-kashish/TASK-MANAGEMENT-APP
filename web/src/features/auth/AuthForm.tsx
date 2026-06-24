@@ -6,15 +6,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
 import { useAppDispatch } from "@/hooks/useAppDispatch";
-import { loginSuccess } from "@/features/auth/auth.slice";
+import {  setCredentials } from "@/features/auth/auth.slice";
 import { useLogin, useRegister } from "@/features/auth/auth.hooks";
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../components/ui/card";
+import {Card,CardContent,CardHeader,CardTitle} from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Button } from "../../components/ui/button";
@@ -88,14 +83,14 @@ type FormData = z.infer<typeof schema>;
         password: values.password,
       };
 
-      const response = isRegister
+      const {user,accessToken} = isRegister
         ? await registerMutation.mutateAsync(payload)
         : await loginMutation.mutateAsync(payload);
 
       dispatch(
-        loginSuccess({
-          user: response.data.user,
-          accessToken: response.data.accessToken,
+        setCredentials({
+          user,
+          accessToken
         })
       );
 
@@ -104,7 +99,6 @@ type FormData = z.infer<typeof schema>;
           ? "Account created successfully"
           : "Logged in successfully"
       );
-      console.log(response)
       navigate("/dashboard", { replace: true });
     } catch (error: any) {
       const message =

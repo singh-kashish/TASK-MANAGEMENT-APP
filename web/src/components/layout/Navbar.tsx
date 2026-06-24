@@ -17,7 +17,8 @@ import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 
 import { logout } from "@/features/auth/auth.slice";
-
+import { authStorage } from "@/utils/authHelper";
+import { useLogout } from "@/features/auth/auth.hooks";
 export default function Navbar() {
   const navigate = useNavigate();
 
@@ -30,12 +31,13 @@ export default function Navbar() {
   );
 
   const handleLogout = () => {
+    authStorage.clear()
     dispatch(logout());
-
     navigate("/", {
       replace: true,
     });
   };
+  const handleLogoutF = useLogout();
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur">
@@ -94,14 +96,23 @@ export default function Navbar() {
                 </Button>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent align="end" className="cursor-pointer bg-gray-100 hover:bg-gray-200  dark:bg-stone-900 dark:hover:bg-stone-800 w-full m-0">
+              <DropdownMenuContent align="end" className="bg-gray-100 dark:bg-stone-900 p-0 m-0 min-w-fit">
                 <DropdownMenuItem
-                  onClick={handleLogout}
-                  className="cursor-pointer"
+                  onClick={()=>handleLogoutF("current")}
+                  className="p-2 cursor-pointer border-b border-gray-600 rounded-none hover:bg-gray-200 dark:hover:bg-stone-800 flex items-center whitespace-nowrap"
+
                 >
                   <LogOut className="mr-2 h-4 w-4" />
 
                   Logout
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={()=>handleLogoutF("all")}
+                  className="p-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-stone-800 flex items-center whitespace-nowrap"
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+
+                  Logout All Devices
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
