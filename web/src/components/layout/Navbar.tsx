@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { LogOut, Moon, Sun, CheckSquare } from "lucide-react";
 
@@ -12,31 +12,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
-
-import { logout } from "@/features/auth/auth.slice";
-import { authStorage } from "@/utils/authHelper";
 import { useLogout } from "@/features/auth/auth.hooks";
+
 export default function Navbar() {
-  const navigate = useNavigate();
-
-  const dispatch = useAppDispatch();
-
   const { theme, setTheme } = useTheme();
 
   const user = useAppSelector(
     (state) => state.auth.user
   );
-
-  const handleLogout = () => {
-    authStorage.clear()
-    dispatch(logout());
-    navigate("/", {
-      replace: true,
-    });
-  };
   const handleLogoutF = useLogout();
 
   return (
