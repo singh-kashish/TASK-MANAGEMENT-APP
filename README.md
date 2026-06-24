@@ -3,10 +3,10 @@
 ## Live Demo
 
 **Frontend**
-https://task-management-cfp75vsq6-singhkashishs-projects.vercel.app/
+[https://task-management-cfp75vsq6-singhkashishs-projects.vercel.app/](https://task-management-app-delta-sable.vercel.app/)
 
 **Backend API**
-https://task-management-app-rs77.onrender.com/api
+[https://task-management-app-rs77.onrender.com/api](https://task-management-app-rs77.onrender.com)
 
 ---
 # Architecture
