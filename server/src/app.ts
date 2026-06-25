@@ -10,8 +10,11 @@ import authRoutes from './routes/auth.routes'
 import errorMiddleware from "./middleware/error.middleware";
 import taskRoutes from "./routes/task.routes";
 import notFound from "./middleware/notFound";
+import { globalLimiter } from "./middleware/rateLimit.middleware";
 
 const app = express();
+
+app.use(globalLimiter);
 
 app.use(helmet());
 

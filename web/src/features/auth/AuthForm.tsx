@@ -110,7 +110,10 @@ type FormData = z.infer<typeof schema>;
   };
 
   return (
-    <Card className="w-full max-w-md">
+    <main className="w-full max-w-lg">
+     <h1>Taskflow</h1>
+    <Card className="w-full max-w-lg">
+     
       <CardHeader>
         <CardTitle>
           {isRegister ? "Create Account" : "Welcome Back"}
@@ -184,5 +187,6 @@ type FormData = z.infer<typeof schema>;
         </form>
       </CardContent>
     </Card>
+    </main>
   );
 }
