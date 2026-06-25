@@ -9,6 +9,7 @@ https://task-management-cfp75vsq6-singhkashishs-projects.vercel.app/
 https://task-management-app-rs77.onrender.com/api
 
 ---
+
 # Architecture
 
 ## Table of Contents
@@ -29,13 +30,13 @@ https://task-management-app-rs77.onrender.com/api
 
 Every architectural decision in TaskFlow traces back to one of these principles:
 
-| Goal | What it means in practice |
-|---|---|
-| **Separation of concerns** | Each layer owns exactly one thing. Controllers don't contain business logic. Services don't know about HTTP. |
-| **Correctness under concurrency** | Token rotation is a single atomic DB operation — not two sequential ones with a gap between them. |
-| **Security by default** | Refresh tokens are never stored in plaintext. HttpOnly cookies. Short-lived access tokens. |
-| **Production readiness** | Docker, CI, compound indexes, centralized error handling, environment-based config. |
-| **Maintainability** | Feature-based frontend, layered backend, explicit type contracts at every boundary. |
+| Goal                              | What it means in practice                                                                                    |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| **Separation of concerns**        | Each layer owns exactly one thing. Controllers don't contain business logic. Services don't know about HTTP. |
+| **Correctness under concurrency** | Token rotation is a single atomic DB operation — not two sequential ones with a gap between them.            |
+| **Security by default**           | Refresh tokens are never stored in plaintext. HttpOnly cookies. Short-lived access tokens.                   |
+| **Production readiness**          | Docker, CI, compound indexes, centralized error handling, environment-based config.                          |
+| **Maintainability**               | Feature-based frontend, layered backend, explicit type contracts at every boundary.                          |
 
 ---
 
@@ -82,6 +83,7 @@ Every architectural decision in TaskFlow traces back to one of these principles:
 ```
 
 ---
+
 ## Frontend Architecture
 
 ### Directory Structure
@@ -90,8 +92,8 @@ Every architectural decision in TaskFlow traces back to one of these principles:
 src/
 ├── api/
 │   ├── client.ts          # Axios instance, request + response interceptors
-│   ├── auth.api.ts        
-│   └── tasks.api.ts       
+│   ├── auth.api.ts
+│   └── tasks.api.ts
 │
 ├── components/
 │   ├── layout/            # AppShell, ErrorBoundary, Navbar, PageSkeleton, ThemeToggle
@@ -375,6 +377,7 @@ Access tokens are stateless — the server verifies them without a DB call. This
 ### Why a single aggregation pipeline for rotation?
 
 The naive two-step approach:
+
 ```
 step 1: findOneAndUpdate → $pull old token
 step 2: updateOne        → $push new token
@@ -383,6 +386,7 @@ step 2: updateOne        → $push new token
 Has a window between the two writes. If the server crashes between them, the old token is gone but the new token was never persisted. The client holds a token that doesn't exist in the DB — permanent logout.
 
 The aggregation pipeline approach:
+
 ```
 findOneAndUpdate(filter, [
   { $set: { refreshTokens: { $filter: ... remove old + expired } } },
@@ -532,7 +536,7 @@ All errors flow through centralized error middleware and return a consistent sha
 {
   "success": false,
   "message": "Human-readable message",
-  "errors": []   // optional, Zod validation errors only
+  "errors": [] // optional, Zod validation errors only
 }
 ```
 
@@ -800,6 +804,7 @@ docker compose up --build
 # Bonus Features
 
 - Dark Mode Support
+- Optimistic Updates
 - Dockerized Setup
 - Automated Testing
 - CI/CD Pipeline
@@ -833,7 +838,6 @@ docker compose up --build
 <img width="2434" height="1596" alt="image" src="https://github.com/user-attachments/assets/f2849e80-d0d3-4f89-b70b-f04a1aea5fd6" />
 
 <img width="2132" height="1526" alt="image" src="https://github.com/user-attachments/assets/b312128e-5f88-4a7f-8f06-0226b6bfab77" />
-
 
 ---
 
@@ -872,15 +876,16 @@ task-management-app/
 
 ## Future Enhancements
 
-| Enhancement | Rationale |
-|---|---|
-| Rate limiting on `/auth/login` and `/auth/refresh` | Prevent brute-force and token hammering |
-| Swagger / OpenAPI docs | Machine-readable API contract, explorable via browser |
-| WebSockets for real-time task updates | Push task changes across devices without polling |
-| `tokensInvalidatedAt` field on User | Instant access token invalidation on signout-all without a blocklist |
-| RBAC | Multi-role support (admin, member) for team-based task management |
-| Activity audit log | Append-only record of create/update/delete events per user |
-| Observability | Structured logging, request tracing, error tracking (e.g. Sentry) |
+| Enhancement                                        | Rationale                                                            |
+| -------------------------------------------------- | -------------------------------------------------------------------- |
+| Rate limiting on `/auth/login` and `/auth/refresh` | Prevent brute-force and token hammering                              |
+| Swagger / OpenAPI docs                             | Machine-readable API contract, explorable via browser                |
+| WebSockets for real-time task updates              | Push task changes across devices without polling                     |
+| `tokensInvalidatedAt` field on User                | Instant access token invalidation on signout-all without a blocklist |
+| RBAC                                               | Multi-role support (admin, member) for team-based task management    |
+| Activity audit log                                 | Append-only record of create/update/delete events per user           |
+| Observability                                      | Structured logging, request tracing, error tracking (e.g. Sentry)    |
+
 ---
 
 ---
