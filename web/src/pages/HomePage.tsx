@@ -4,7 +4,7 @@ export default function HomePage() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center gap-6">
       <h1 className="text-4xl font-bold">
-        Task Management App
+        TaskFlow - Task Management Platform
       </h1>
 
       <p className="text-muted-foreground">
