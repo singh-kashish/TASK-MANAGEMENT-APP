@@ -65,24 +65,6 @@ export const loginUser = async (
   );
 };
 
-export const deleteAndCreateRefreshToken = async (oldRefreshTokenHash:string,user:InstanceType<typeof UserModel>)=>{
-  const {accessToken,refreshToken,} = await issueTokens(user)
-  let result = await UserModel.findByIdAndUpdate(
-  {
-    _id: user._id,
-    refreshTokens:
-      oldRefreshTokenHash,
-  },
-  {
-    $pull: {
-      refreshTokens:
-        oldRefreshTokenHash,
-    }
-  }
-);
-return {accessToken,refreshToken};
-}
-
 export const signoutUser = async (userId: string, refreshToken: string) => {
   if (!refreshToken) return;
   const tokenHash = hashRefreshToken(refreshToken);

@@ -80,7 +80,7 @@ export const refreshAuthController = asyncHandler(
     // 4) Atomically rotate the refresh token in DB and issue new tokens
     const { accessToken, refreshToken } = await rotateRefreshToken(
       oldHash,
-      user._id
+      user
     );
     // 5) Update cookie with the new refresh token
     res.cookie("refreshToken", refreshToken, refreshCookieOptions);

@@ -11,11 +11,13 @@ import errorMiddleware from "./middleware/error.middleware";
 import taskRoutes from "./routes/task.routes";
 import notFound from "./middleware/notFound";
 import { globalLimiter } from "./middleware/rateLimit.middleware";
+import requestIdMiddleware from "./middleware/request-id.middleware";
+import loggingMiddleware from "./middleware/logger.middleware";
 
 const app = express();
 
 app.use(globalLimiter);
-
+app.use(requestIdMiddleware);
 app.use(helmet());
 
 app.use(
@@ -31,6 +33,7 @@ app.use(express.json());
 
 app.use(cookieParser());
 
+app.use(loggingMiddleware);
 app.use("/api/health", healthRoutes);
 app.use("/api/auth",authRoutes);
 app.use("/api/tasks",taskRoutes)

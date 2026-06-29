@@ -2,8 +2,9 @@ import UserModel from "../models/user.model";
 import crypto from "crypto";
 import {generateAccessToken,generateRefreshToken} from "./jwt";
 import { MAX_REFRESH_TOKENS, REFRESH_TOKEN_TTL } from "../constants/auth.constants";
-import { Types } from "mongoose";
+import { HydratedDocument, Types } from "mongoose";
 import AppError from "./AppError";
+import { IUser } from "../types/user.types";
 
 const hashRefreshToken = (token: string): string => {
   return crypto
@@ -77,14 +78,8 @@ const storeRefreshToken = async (
 
 const rotateRefreshToken = async (
   oldRefreshTokenHash: string,
-  userId: Types.ObjectId | string
+  user:HydratedDocument<IUser>
 ) => {
-  // Issue new tokens first (pure operation)
-  const user = await UserModel.findById(userId);
-  if (!user) {
-    throw new AppError("User not found", 404);
-  }
-
   const { accessToken, refreshToken } = await issueTokens(user);
 
   const newTokenHash = hashRefreshToken(refreshToken);
