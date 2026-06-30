@@ -21,7 +21,13 @@ ReactDOM.createRoot(
       <QueryProvider>
         <ThemeProvider>
           <App/>
-          <Toaster />
+          <Toaster richColors closeButton position="bottom-right" expand visibleToasts={4}
+            toastOptions={{
+              classNames: {
+                toast:
+                  "rounded-xl shadow-2xl border",
+              },
+            }} />
         </ThemeProvider>
       </QueryProvider>
     </Provider>

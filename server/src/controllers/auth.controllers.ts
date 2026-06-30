@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import {registerUser,loginUser,deleteAndCreateRefreshToken, signoutUser, signoutAllService,} from "../services/auth.services";
+import {registerUser,loginUser, signoutUser, signoutAllService,} from "../services/auth.services";
 import {RegisterUserInput,LoginUserInput} from "../validators/auth.validator";
 import { refreshCookieOptions } from "../utils/cookies";
 import { asyncHandler } from "../utils/asyncHandler";
